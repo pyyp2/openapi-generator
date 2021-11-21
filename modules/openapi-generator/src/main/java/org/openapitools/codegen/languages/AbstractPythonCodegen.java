@@ -446,7 +446,7 @@ public abstract class AbstractPythonCodegen extends DefaultCodegen implements Co
                 toExclude = schema.getDiscriminator().getPropertyName();
             }
 
-            example = packageName + ".models." + underscore(schema.getTitle()) + "." + schema.getTitle() + "(";
+            example = packageName + ".models." + underscore(schema.getTitle()) + "." + camelize(schema.getTitle()) + "(";
 
             // if required only:
             // List<String> reqs = schema.getRequired();
@@ -482,7 +482,7 @@ public abstract class AbstractPythonCodegen extends DefaultCodegen implements Co
                         if (StringUtils.isBlank(refTitle) || "null".equals(refTitle)) {
                             schema2.setTitle(propname);
                         }
-                        example += "\n" + indentationString + underscore(propname) + " = " +
+                        example += "\n" + indentationString + escapeReservedWord(underscore(propname)) + " = " +
                                 toExampleValueRecursive(schema2, includedSchemas, indentation + 1) + ", ";
                     }
                 }

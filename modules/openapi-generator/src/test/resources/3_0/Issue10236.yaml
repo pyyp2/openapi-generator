@@ -1,0 +1,41 @@
+swagger: "2.0"
+info:
+  description: Bug
+  title: Bug
+  version: 0.0.0
+
+produces:
+- application/json
+consumes:
+- application/json
+
+schemes:
+- http
+- https
+
+basePath: /a-bug
+
+definitions:
+  Wrapper:
+    type: object
+    properties:
+      whatever:
+        type: object
+        properties:
+          del:
+            type: boolean
+
+
+paths:
+  /test:
+    get:
+      description: i'm makeing a bug
+      produces:
+        - application/json
+      consumes:
+        - application/json
+      responses:
+        200:
+          description: this is bad and wrong
+          schema:
+            $ref: "#/definitions/Wrapper"

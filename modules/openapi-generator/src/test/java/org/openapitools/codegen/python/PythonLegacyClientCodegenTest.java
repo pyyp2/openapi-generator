@@ -24,11 +24,13 @@ import io.swagger.v3.oas.models.media.*;
 import io.swagger.v3.parser.util.SchemaTypeUtil;
 import org.openapitools.codegen.*;
 import org.openapitools.codegen.languages.PythonLegacyClientCodegen;
+import org.openapitools.codegen.utils.ModelUtils;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Map;
 
 public class PythonLegacyClientCodegenTest {
 
@@ -378,5 +380,33 @@ public class PythonLegacyClientCodegenTest {
         Assert.assertEquals(cm.parent, "null<String, Children>");
         Assert.assertEquals(cm.imports.size(), 1);
         Assert.assertEquals(Sets.intersection(cm.imports, Sets.newHashSet("Children")).size(), 1);
+    }
+
+
+    /**
+    * resolve the problem in issue 10236:
+     *  1. With nested object
+     *  2. One of the nested object key is reserved word
+    */
+    @Test(description = "test nested object")
+    public void testNestedExampleValues() {
+        final OpenAPI openAPI = TestUtils.parseFlattenSpec("src/test/resources/3_0/Issue10236.yaml");
+        final PythonLegacyClientCodegen codegen = new PythonLegacyClientCodegen();
+        codegen.setOpenAPI(openAPI);
+        final Map<String, Schema> schemas = ModelUtils.getSchemas(openAPI);
+//        System.out.println(schemas);
+//        Set<String> modelKeys = schemas.keySet();
+//        Map<String, String> usedImportMappings =  new HashMap<>();
+//        for (String name : modelKeys) {
+        final Schema testSchema = schemas.get("Wrapper");
+        final Map<String, Schema> properties = testSchema.getProperties();
+        for (final Map.Entry<String, Schema> entry : properties.entrySet()) {
+
+            final String key = entry.getKey();
+            final Schema prop = entry.getValue();
+            final CodegenProperty codegenProperty = codegen.fromProperty(key, prop);
+            Assert.assertEquals(codegenProperty.example, "openapi_client.models.wrapper_whatever.WrapperWhatever(\n" +
+                    "                    _del = True, )");
+        }
     }
 }
