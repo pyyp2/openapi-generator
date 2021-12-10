@@ -77,5 +77,17 @@ public class TypeScriptAxiosClientCodegenTest {
         assertEquals(codegen.toEnumVarName("A", "string"), "A");
         assertEquals(codegen.toEnumVarName("b", "string"), "B");
     }
+    /**
+     * resolve the problem in issue 10464:
+     *  1. Resolve Enum with duplicate key
+     */
+    @Test
+    public void testToEnumVarNameDuplicateName() {
+        codegen.additionalProperties().put(CodegenConstants.ENUM_PROPERTY_NAMING, CodegenConstants.ENUM_PROPERTY_NAMING_TYPE.original.name());
+        codegen.processOpts();
+        assertEquals(codegen.toEnumVarName("<description", "string"), "Leftdescription");
+//        System.out.println(codegen.toEnumVarName("<description", "string"));
+        assertEquals(codegen.toEnumVarName(">description", "string"), "Rightdescription");
+    }
 
 }

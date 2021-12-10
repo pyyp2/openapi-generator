@@ -5629,6 +5629,8 @@ public class DefaultCodegen implements CodegenConfig {
             // \api\films\get => _api_films_get
             modifiable = modifiable.replaceAll("/", "_");
             modifiable = modifiable.replaceAll("\\\\", "_");
+            modifiable = modifiable.replaceAll("<", "Left");
+            modifiable = modifiable.replaceAll(">", "Right");
 
             // remove everything else other than word, number and _
             // $php_variable => php_variable
